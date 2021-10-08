@@ -129,7 +129,7 @@ jobs:
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/bin
-          artifact-name: containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.spdx.json
+          artifact-name: containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Save build binaries
         uses: actions/upload-artifact@v2
@@ -155,14 +155,14 @@ jobs:
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
-          artifact-name: cri-containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.spdx.json
+          artifact-name: cri-containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Create cri-cni-containerd SBOMs
         uses: anchore/sbom-action@v0
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
-          artifact-name: cri-containerd-cni-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.spdx.json
+          artifact-name: cri-containerd-cni-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Save cri-containerd binaries
         uses: actions/upload-artifact@v2
