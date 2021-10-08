@@ -77,7 +77,6 @@ jobs:
             os=windows
           }
           echo "RELEASE_VER=${releasever}" >> $GITHUB_ENV
-          echo "V=${RELEASE_VER#v}" >> $GITHUB_ENV
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "OS=${os}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
@@ -130,7 +129,7 @@ jobs:
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/bin
-          artifact-name: containerd-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
+          artifact-name: containerd-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Save build binaries
         uses: actions/upload-artifact@v2
@@ -156,14 +155,14 @@ jobs:
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
-          artifact-name: cri-containerd-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
+          artifact-name: cri-containerd-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Create cri-cni-containerd SBOMs
         uses: anchore/sbom-action@v0
         if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
-          artifact-name: cri-containerd-cni-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
+          artifact-name: cri-containerd-cni-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Save cri-containerd binaries
         uses: actions/upload-artifact@v2
