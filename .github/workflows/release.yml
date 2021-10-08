@@ -8,6 +8,7 @@ name: Containerd Release
 jobs:
   check:
     name: Check Signed Tag
+    if: "false"
     runs-on: ubuntu-18.04
     timeout-minutes: 5
     outputs:
@@ -125,6 +126,7 @@ jobs:
 
       - name: Create containerd SBOMs
         uses: anchore/sbom-action@v0
+        if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/bin
           artifact-name: containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.spdx.json
@@ -151,6 +153,7 @@ jobs:
 
       - name: Create cri-containerd SBOMs
         uses: anchore/sbom-action@v0
+        if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/bin
           artifact-name: cri-containerd-${{ env.RELEASE_VER }}-${{ env.OS }}-amd64.spdx.json
