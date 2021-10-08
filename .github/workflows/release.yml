@@ -76,6 +76,7 @@ jobs:
             os=windows
           }
           echo "RELEASE_VER=${releasever}" >> $GITHUB_ENV
+          echo "V=${RELEASE_VER#v}" >> $GITHUB_ENV
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "OS=${os}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
@@ -123,6 +124,13 @@ jobs:
           sha256sum ${TARFILE} >${TARFILE}.sha256sum
         working-directory: src/github.com/containerd/containerd
 
+      - name: Create containerd SBOMs
+        uses: anchore/sbom-action@v0
+        if: ${{ env.OS == 'linux' }}
+        with:
+          path: src/github.com/containerd/containerd/bin
+          artifact-name: containerd-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
+
       - name: Save build binaries
         uses: actions/upload-artifact@v2
         with:
@@ -141,6 +149,20 @@ jobs:
           fi
           make cri-release cri-cni-release
         working-directory: src/github.com/containerd/containerd
+
+      - name: Create cri-containerd SBOMs
+        uses: anchore/sbom-action@v0
+        if: ${{ env.OS == 'linux' }}
+        with:
+          path: src/github.com/containerd/containerd/_output/cri
+          artifact-name: cri-containerd-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
+
+      - name: Create cri-cni-containerd SBOMs
+        uses: anchore/sbom-action@v0
+        if: ${{ env.OS == 'linux' }}
+        with:
+          path: src/github.com/containerd/containerd/_output/cri
+          artifact-name: cri-containerd-cni-${{ env.V }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Save cri-containerd binaries
         uses: actions/upload-artifact@v2
@@ -172,6 +194,9 @@ jobs:
           body_path: ./builds/containerd-release-notes/release-notes.md
           draft: false
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+
+      - name: Upload SBOMs
+        uses: anchore/sbom-action/publish-sbom@v0
 
   release-upload:
     name: Upload containerd tarballs
