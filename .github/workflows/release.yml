@@ -8,7 +8,6 @@ name: Containerd Release
 jobs:
   check:
     name: Check Signed Tag
-    if: "false"
     runs-on: ubuntu-18.04
     timeout-minutes: 5
     outputs:
