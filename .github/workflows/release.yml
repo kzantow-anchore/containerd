@@ -22,6 +22,7 @@ jobs:
           path: src/github.com/containerd/containerd
 
       - name: Check signature
+        if: "false"
         run: |
           releasever=${{ github.ref }}
           releasever="${releasever#refs/tags/}"
@@ -52,7 +53,7 @@ jobs:
   build:
     name: Build Release Binaries
     runs-on: ${{ matrix.os }}
-#    needs: [check]
+    needs: [check]
     timeout-minutes: 10
 
     strategy:
