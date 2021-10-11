@@ -124,9 +124,13 @@ jobs:
           sha256sum ${TARFILE} >${TARFILE}.sha256sum
         working-directory: src/github.com/containerd/containerd
 
+      - uses: Vampire/setup-wsl@v1
+        if: startsWith(matrix.os, 'windows')
+        with:
+          distribution: Alpine
+
       - name: Create containerd SBOMs
         uses: anchore/sbom-action@v0
-        if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/bin
           artifact-name: containerd-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
@@ -152,14 +156,12 @@ jobs:
 
       - name: Create cri-containerd SBOMs
         uses: anchore/sbom-action@v0
-        if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
           artifact-name: cri-containerd-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
 
       - name: Create cri-cni-containerd SBOMs
         uses: anchore/sbom-action@v0
-        if: ${{ env.OS == 'linux' }}
         with:
           path: src/github.com/containerd/containerd/_output/cri
           artifact-name: cri-containerd-cni-${{ needs.check.outputs.stringver }}-${{ env.OS }}-amd64.tar.gz.spdx.json
